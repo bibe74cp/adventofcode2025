@@ -105,8 +105,8 @@ SELECT
     M.final_position,
     M.zeroes_passed
 	*/
-	SUM(CASE WHEN M.final_position = 0 THEN 1 ELSE 0 END) AS zeroes_reached,
-	SUM(M.zeroes_passed) AS zeroes_passed
+	SUM(CASE WHEN M.final_position = 0 THEN 1 ELSE 0 END) AS response1,
+	SUM(M.zeroes_passed) AS response2
 
 FROM Moves M
 OPTION (MAXRECURSION 5000);

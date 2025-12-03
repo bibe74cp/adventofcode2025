@@ -35,7 +35,7 @@ INTO #Ranges
 FROM input.D02P1;
 GO
 
-SELECT * FROM #Ranges ORDER BY range_start;
+--SELECT * FROM #Ranges ORDER BY range_start;
 GO
 
 DECLARE @max_number_of_digits BIGINT;
@@ -66,7 +66,7 @@ AS (
 )
 SELECT
 	--IC.invalid_code
-	SUM(IC.invalid_code) AS response
+	SUM(IC.invalid_code) AS response1
 
 FROM InvalidCodes IC
 INNER JOIN #Ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
@@ -107,7 +107,7 @@ AS (
 	CROSS APPLY GENERATE_SERIES(C.range_start, C.range_end, CONVERT(BIGINT, 1)) AS gs
 )
 SELECT
-	SUM(IC.invalid_code) AS response
+	SUM(IC.invalid_code) AS response2
 
 FROM InvalidCodes IC
 INNER JOIN #Ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
