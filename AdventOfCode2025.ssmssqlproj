@@ -30,6 +30,12 @@
           <AssociatedConnUserName />
           <FullPath>AdventOfCode2025_03_day3.sql</FullPath>
         </FileNode>
+        <FileNode Name="AdventOfCode2025_04_day4.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>AdventOfCode2025_04_day4.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
@@ -51,6 +57,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>input_D03P1.txt</FullPath>
+        </FileNode>
+        <FileNode Name="input_D04P1.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>input_D04P1.txt</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

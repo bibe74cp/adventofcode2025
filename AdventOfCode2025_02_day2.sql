@@ -17,7 +17,7 @@ GO
 INSERT INTO input.D02P1 (
     group_range
 )
-VALUES (...);
+VALUES ('989133-1014784'),('...
 GO
 
 */

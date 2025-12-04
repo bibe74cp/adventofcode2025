@@ -8,6 +8,12 @@ GO
 ALTER TABLE input.D04P1 ADD PK INT NOT NULL IDENTITY (1, 1);
 GO
 
+DROP TABLE IF EXISTS input.D04P1_backup;
+GO
+
+SELECT * INTO input.D04P1_backup FROM input.D04P1;
+GO
+
 */
 GO
 
@@ -112,32 +118,8 @@ FROM input.D04P1 I,
 	Cols C;
 GO
 
--- OK fin qui
-
-DROP TABLE IF EXISTS dbo.D04_Rolls;
-GO
-
-WITH Cols
-AS (
-	SELECT
-		GS.value AS col
-
-	FROM GENERATE_SERIES(1, 136, 1) GS
-)
-SELECT
-	I.PK AS linePK,
-	C.col,
-	SUBSTRING(I.roll_line, C.col, 1) AS slotContent
-
-INTO dbo.D04_Rolls
-
-FROM input.D04P1 I,
-	Cols C;
-GO
-
 CREATE OR ALTER PROCEDURE dbo.usp_D04_RemoveAvailableRolls (
-	@rollsRemoved INT OUTPUT,
-	@rollCount INT OUTPUT
+	@rollsRemoved INT OUTPUT
 )
 AS
 BEGIN
@@ -146,9 +128,111 @@ BEGIN
 
 	DROP TABLE IF EXISTS #D04_Rolls;
 
-	SELECT * INTO #D04_Rolls FROM dbo.D04_Rolls;
+	WITH Cols
+	AS (
+		SELECT
+			GS.value AS col
+
+		FROM GENERATE_SERIES(1, 136, 1) GS
+	)
+	SELECT
+		I.PK AS linePK,
+		C.col,
+		SUBSTRING(I.roll_line, C.col, 1) AS slotContent
+
+	INTO #D04_Rolls
+
+	FROM input.D04P1 I,
+		Cols C;
+
+	DROP TABLE IF EXISTS #D04_RollsToRemove;
+
+	SELECT
+		R.linePK,
+        R.col,
+		'.' AS slotContent
+
+	INTO #D04_RollsToRemove
+
+	FROM #D04_Rolls R
+	WHERE R.slotContent = '@'
+		AND dbo.usp_D04_CheckRollAvailability(R.linePK, R.col) = 1;
+
+	SELECT
+		@rollsRemoved = COUNT(1)
+
+	FROM #D04_RollsToRemove RTR;
+
+	TRUNCATE TABLE input.D04P1;
+
+	SET IDENTITY_INSERT input.D04P1 ON;
+
+	WITH NewRolls
+	AS (
+		SELECT
+			R.linePK,
+			R.col,
+			COALESCE(RTR.slotContent, R.slotContent) AS slotContent
+
+		FROM #D04_Rolls R
+		LEFT JOIN #D04_RollsToRemove RTR ON RTR.linePK = R.linePK AND RTR.col = R.col
+	)
+	INSERT INTO input.D04P1 (
+		PK,
+	    roll_line
+	)
+	SELECT
+		NR.linePK AS PK,
+		STRING_AGG(CAST(NR.slotContent AS VARCHAR(1)), '')
+			WITHIN GROUP (ORDER BY NR.col) AS roll_line
+
+	FROM NewRolls NR
+	GROUP BY NR.linePK
+	ORDER BY NR.linePK;
+
+	SET IDENTITY_INSERT input.D04P1 OFF;
 
 END;
+GO
+
+SET STATISTICS IO, TIME OFF;
+
+SET NOCOUNT ON;
+
+DROP TABLE IF EXISTS input.D04P1;
+GO
+
+SELECT * INTO input.D04P1 FROM input.D04P1_backup;
+GO
+
+DECLARE @iteration INT = 0,
+	@rollsRemoved INT = -1,
+	@rollsRemovedTotal INT = 0,
+	@totalRolls INT;
+
+SELECT @totalRolls = SUM(REGEXP_COUNT(roll_line, '@')) FROM input.D04P1;
+
+WHILE (@rollsRemoved <> 0)
+BEGIN
+
+	EXEC dbo.usp_D04_RemoveAvailableRolls @rollsRemoved = @rollsRemoved OUTPUT;
+
+	SELECT @iteration = @iteration + 1,
+		@rollsRemovedTotal = @rollsRemovedTotal + @rollsRemoved
+
+	RAISERROR ('Iteration %d: %d rolls out of %d removed. Total rolls removed: %d', 0, 1, @iteration, @rollsRemoved, @totalRolls, @rollsRemovedTotal) WITH NOWAIT;
+
+	SELECT @totalRolls = SUM(REGEXP_COUNT(roll_line, '@')) FROM input.D04P1;
+
+END;
+
+SELECT @rollsRemovedTotal AS response2;
+GO
+
+DROP TABLE IF EXISTS input.D04P1;
+GO
+
+SELECT * INTO input.D04P1 FROM input.D04P1_backup;
 GO
 
 /* Day 4: END */
