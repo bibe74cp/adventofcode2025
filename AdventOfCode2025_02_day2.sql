@@ -35,8 +35,7 @@ INTO #Ranges
 FROM input.D02P1;
 GO
 
---SELECT * FROM #Ranges ORDER BY range_start;
-GO
+SET STATISTICS IO, TIME ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
@@ -44,8 +43,8 @@ SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) / 2 FROM #Range
 
 WITH HalfSizes
 AS (
-	SELECT gs.value AS half_size
-	FROM GENERATE_SERIES(CONVERT(BIGINT, 1), @max_number_of_digits, CONVERT(BIGINT, 1)) AS gs
+	SELECT GS.value AS half_size
+	FROM GENERATE_SERIES(CONVERT(BIGINT, 1), @max_number_of_digits, CONVERT(BIGINT, 1)) GS
 ),
 HalfRanges
 AS (
@@ -59,18 +58,19 @@ AS (
 InvalidCodes
 AS (
 	SELECT
-		CONVERT(BIGINT, gs.value * POWER(10, HR.half_size) + gs.value) AS invalid_code
+		CONVERT(BIGINT, GS.value * POWER(10, HR.half_size) + GS.value) AS invalid_code
 
 	FROM HalfRanges HR
-	CROSS APPLY GENERATE_SERIES(HR.half_range_start, HR.half_range_end, CONVERT(BIGINT, 1)) AS gs
+	CROSS APPLY GENERATE_SERIES(HR.half_range_start, HR.half_range_end, CONVERT(BIGINT, 1)) GS
 )
 SELECT
-	--IC.invalid_code
 	SUM(IC.invalid_code) AS response1
 
 FROM InvalidCodes IC
 INNER JOIN #Ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
 GO
+
+SET STATISTICS IO, TIME ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
@@ -78,8 +78,8 @@ SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) FROM #Ranges R;
 
 WITH Numbers
 AS (
-	SELECT gs.value AS number
-	FROM GENERATE_SERIES(CONVERT(BIGINT, 1), @max_number_of_digits, CONVERT(BIGINT, 1)) AS gs
+	SELECT GS.value AS number
+	FROM GENERATE_SERIES(CONVERT(BIGINT, 1), @max_number_of_digits, CONVERT(BIGINT, 1)) GS
 ),
 Combinations
 AS (
@@ -97,14 +97,10 @@ AS (
 InvalidCodes
 AS (
 	SELECT DISTINCT
-		--C.number_of_digits,
-		--C.range_start,
-		--C.range_end,
-		--C.repetitions,
-		CONVERT(BIGINT, REPLICATE(CONVERT(NVARCHAR(10), gs.value), C.repetitions)) AS invalid_code
+		CONVERT(BIGINT, REPLICATE(CONVERT(NVARCHAR(10), GS.value), C.repetitions)) AS invalid_code
 
 	FROM Combinations C
-	CROSS APPLY GENERATE_SERIES(C.range_start, C.range_end, CONVERT(BIGINT, 1)) AS gs
+	CROSS APPLY GENERATE_SERIES(C.range_start, C.range_end, CONVERT(BIGINT, 1)) GS
 )
 SELECT
 	SUM(IC.invalid_code) AS response2

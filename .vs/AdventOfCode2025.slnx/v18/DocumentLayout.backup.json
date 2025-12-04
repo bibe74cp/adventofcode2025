@@ -1,16 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Work\\CodicePlastico\\adventofcode2025\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{33F63FB6-8CA4-9D4D-7AD4-B7DD93EEE613}|AdventOfCode2025.ssmssqlproj|C:\\Work\\CodicePlastico\\adventofcode2025\\AdventOfCode2025_01_day1.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
-      "RelativeMoniker": "D:0:0:{33F63FB6-8CA4-9D4D-7AD4-B7DD93EEE613}|AdventOfCode2025.ssmssqlproj|solutionrelative:AdventOfCode2025_01_day1.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{33F63FB6-8CA4-9D4D-7AD4-B7DD93EEE613}|AdventOfCode2025.ssmssqlproj|C:\\Work\\CodicePlastico\\adventofcode2025\\AdventOfCode2025_00_setup.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
-      "RelativeMoniker": "D:0:0:{33F63FB6-8CA4-9D4D-7AD4-B7DD93EEE613}|AdventOfCode2025.ssmssqlproj|solutionrelative:AdventOfCode2025_00_setup.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -18,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -43,28 +34,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdventOfCode2025_01_day1.sql - AdventOfCode2025",
-              "DocumentMoniker": "C:\\Work\\CodicePlastico\\adventofcode2025\\AdventOfCode2025_01_day1.sql",
-              "RelativeDocumentMoniker": "AdventOfCode2025_01_day1.sql",
-              "ToolTip": "AdventOfCode2025_01_day1.sql - AdventOfCode2025",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-01T22:03:20.553Z",
-              "EditorCaption": " - AdventOfCode2025"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdventOfCode2025_00_setup.sql - AdventOfCode2025",
-              "DocumentMoniker": "C:\\Work\\CodicePlastico\\adventofcode2025\\AdventOfCode2025_00_setup.sql",
-              "RelativeDocumentMoniker": "AdventOfCode2025_00_setup.sql",
-              "ToolTip": "AdventOfCode2025_00_setup.sql - AdventOfCode2025",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-12-01T22:03:15.166Z",
-              "EditorCaption": " - AdventOfCode2025"
             },
             {
               "$type": "Bookmark",

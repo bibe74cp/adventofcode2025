@@ -24,10 +24,35 @@
           <AssociatedConnUserName />
           <FullPath>AdventOfCode2025_02_day2.sql</FullPath>
         </FileNode>
+        <FileNode Name="AdventOfCode2025_03_day3.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>AdventOfCode2025_03_day3.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items />
+      <Items>
+        <FileNode Name="input_D01P1.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>input_D01P1.txt</FullPath>
+        </FileNode>
+        <FileNode Name="input_D02P1.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>input_D02P1.txt</FullPath>
+        </FileNode>
+        <FileNode Name="input_D03P1.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>input_D03P1.txt</FullPath>
+        </FileNode>
+      </Items>
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>

@@ -38,8 +38,8 @@ BEGIN
 
 	;WITH Numbers
 	AS (
-		SELECT gs.value AS number
-		FROM GENERATE_SERIES(1, @distance, 1) AS gs
+		SELECT GS.value AS number
+		FROM GENERATE_SERIES(1, @distance, 1) GS
 	)
 	SELECT
 		@zeroes_passed = COUNT(1)
@@ -73,6 +73,8 @@ BEGIN
 END;
 GO
 
+SET STATISTICS IO, TIME ON;
+
 WITH Moves
 AS (
 	SELECT
@@ -97,14 +99,6 @@ AS (
 	CROSS APPLY dbo.usp_D01_ExplainMove(M.final_position, M.move_id + 1) EM
 )
 SELECT
-	/*
-	M.move_id,
-    M.initial_position,
-    M.move_code,
-    M.final_position_computed,
-    M.final_position,
-    M.zeroes_passed
-	*/
 	SUM(CASE WHEN M.final_position = 0 THEN 1 ELSE 0 END) AS response1,
 	SUM(M.zeroes_passed) AS response2
 

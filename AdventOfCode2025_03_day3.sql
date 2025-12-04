@@ -37,14 +37,6 @@ BEGIN
 END;
 GO
 
-/*
-SELECT * FROM dbo.usp_D03_GetHigherDigit('987654321111111', 2);
-SELECT * FROM dbo.usp_D03_GetHigherDigit('811111111111119', 2);
-SELECT * FROM dbo.usp_D03_GetHigherDigit('234234234234278', 2);
-SELECT * FROM dbo.usp_D03_GetHigherDigit('818181911112111', 2);
-GO
-*/
-
 CREATE OR ALTER FUNCTION dbo.usp_D03_GetJoltage (@bank VARCHAR(100), @depth TINYINT = 2)
 RETURNS BIGINT
 AS
@@ -84,31 +76,7 @@ BEGIN
 END;
 GO
 
-/*
-SELECT dbo.usp_D03_GetJoltage('987654321111111', 2);
-SELECT dbo.usp_D03_GetJoltage('811111111111119', 2);
-SELECT dbo.usp_D03_GetJoltage('234234234234278', 2);
-SELECT dbo.usp_D03_GetJoltage('818181911112111', 2);
-
-SELECT
-	B.bank,
-	dbo.usp_D03_GetJoltage(B.bank, 2) AS joltage
-
-FROM input.D03P1 B;
-*/
-
-/*
-SELECT dbo.usp_D03_GetJoltage('987654321111111', 12);
-SELECT dbo.usp_D03_GetJoltage('811111111111119', 12);
-SELECT dbo.usp_D03_GetJoltage('234234234234278', 12);
-SELECT dbo.usp_D03_GetJoltage('818181911112111', 12);
-
-SELECT
-	B.bank,
-	dbo.usp_D03_GetJoltage(B.bank, 2) AS joltage
-
-FROM input.D03P1 B;
-*/
+SET STATISTICS IO, TIME ON;
 
 SELECT
 	SUM(dbo.usp_D03_GetJoltage(B.bank, 2)) AS response1,
