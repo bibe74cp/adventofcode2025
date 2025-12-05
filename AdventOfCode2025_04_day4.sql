@@ -3,18 +3,25 @@ GO
 
 /* Day 4: BEGIN */
 
-/* Import flat file input.txt into table input.D04P1, then:
-
-ALTER TABLE input.D04P1 ADD PK INT NOT NULL IDENTITY (1, 1);
+DROP TABLE IF EXISTS input.day04;
 GO
 
-DROP TABLE IF EXISTS input.D04P1_backup;
-GO
+IF OBJECT_ID('input.day04', 'U') IS NULL
+BEGIN
 
-SELECT * INTO input.D04P1_backup FROM input.D04P1;
-GO
+	CREATE TABLE input.day04 (
+		line NVARCHAR(150) NOT NULL
+	);
 
-*/
+	BULK INSERT input.day04 FROM '/var/aoc/input_D04P1.txt';
+
+	ALTER TABLE input.day04 ADD PK INT NOT NULL IDENTITY (1, 1);
+
+	DROP TABLE IF EXISTS input.day04_backup;
+
+	SELECT * INTO input.day04_backup FROM input.day04;
+
+END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRoll (@line NVARCHAR(200), @position SMALLINT)
@@ -67,12 +74,12 @@ BEGIN
 	)
 	SELECT
 		@rollCount = SUM(
-			dbo.usp_D04_CountRolls(I.roll_line, @position)
-			- CASE WHEN I.PK = @linePK AND SUBSTRING(I.roll_line, @position, 1) = N'@' THEN 1 ELSE 0 END
+			dbo.usp_D04_CountRolls(I.line, @position)
+			- CASE WHEN I.PK = @linePK AND SUBSTRING(I.line, @position, 1) = N'@' THEN 1 ELSE 0 END
 		)
 
 	FROM Lines L
-	INNER JOIN input.D04P1 I ON I.PK = L.linePK;
+	INNER JOIN input.day04 I ON I.PK = L.linePK;
 
 	RETURN @rollCount;
 
@@ -88,9 +95,9 @@ BEGIN
 		@adjacentRolls INT;
 
 	SELECT
-		@line = roll_line
+		@line = line
 
-	FROM input.D04P1 I
+	FROM input.day04 I
 	WHERE I.PK = @linePK;
 
 	IF SUBSTRING(@line, @position, 1) <> N'@' RETURN 0;
@@ -114,7 +121,7 @@ AS (
 SELECT
 	SUM(dbo.usp_D04_CheckRollAvailability(I.PK, C.col)) AS response1
 
-FROM input.D04P1 I,
+FROM input.day04 I,
 	Cols C;
 GO
 
@@ -138,11 +145,11 @@ BEGIN
 	SELECT
 		I.PK AS linePK,
 		C.col,
-		SUBSTRING(I.roll_line, C.col, 1) AS slotContent
+		SUBSTRING(I.line, C.col, 1) AS slotContent
 
 	INTO #D04_Rolls
 
-	FROM input.D04P1 I,
+	FROM input.day04 I,
 		Cols C;
 
 	DROP TABLE IF EXISTS #D04_RollsToRemove;
@@ -163,9 +170,9 @@ BEGIN
 
 	FROM #D04_RollsToRemove RTR;
 
-	TRUNCATE TABLE input.D04P1;
+	TRUNCATE TABLE input.day04;
 
-	SET IDENTITY_INSERT input.D04P1 ON;
+	SET IDENTITY_INSERT input.day04 ON;
 
 	WITH NewRolls
 	AS (
@@ -177,20 +184,20 @@ BEGIN
 		FROM #D04_Rolls R
 		LEFT JOIN #D04_RollsToRemove RTR ON RTR.linePK = R.linePK AND RTR.col = R.col
 	)
-	INSERT INTO input.D04P1 (
+	INSERT INTO input.day04 (
 		PK,
-	    roll_line
+	    line
 	)
 	SELECT
 		NR.linePK AS PK,
 		STRING_AGG(CAST(NR.slotContent AS VARCHAR(1)), '')
-			WITHIN GROUP (ORDER BY NR.col) AS roll_line
+			WITHIN GROUP (ORDER BY NR.col) AS line
 
 	FROM NewRolls NR
 	GROUP BY NR.linePK
 	ORDER BY NR.linePK;
 
-	SET IDENTITY_INSERT input.D04P1 OFF;
+	SET IDENTITY_INSERT input.day04 OFF;
 
 END;
 GO
@@ -199,10 +206,10 @@ SET STATISTICS IO, TIME OFF;
 
 SET NOCOUNT ON;
 
-DROP TABLE IF EXISTS input.D04P1;
+DROP TABLE IF EXISTS input.day04;
 GO
 
-SELECT * INTO input.D04P1 FROM input.D04P1_backup;
+SELECT * INTO input.day04 FROM input.day04_backup;
 GO
 
 DECLARE @iteration INT = 0,
@@ -210,7 +217,7 @@ DECLARE @iteration INT = 0,
 	@rollsRemovedTotal INT = 0,
 	@totalRolls INT;
 
-SELECT @totalRolls = SUM(REGEXP_COUNT(roll_line, '@')) FROM input.D04P1;
+SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM input.day04;
 
 WHILE (@rollsRemoved <> 0)
 BEGIN
@@ -222,17 +229,17 @@ BEGIN
 
 	RAISERROR ('Iteration %d: %d rolls out of %d removed. Total rolls removed: %d', 0, 1, @iteration, @rollsRemoved, @totalRolls, @rollsRemovedTotal) WITH NOWAIT;
 
-	SELECT @totalRolls = SUM(REGEXP_COUNT(roll_line, '@')) FROM input.D04P1;
+	SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM input.day04;
 
 END;
 
 SELECT @rollsRemovedTotal AS response2;
 GO
 
-DROP TABLE IF EXISTS input.D04P1;
+DROP TABLE IF EXISTS input.day04;
 GO
 
-SELECT * INTO input.D04P1 FROM input.D04P1_backup;
+SELECT * INTO input.day04 FROM input.day04_backup;
 GO
 
 /* Day 4: END */

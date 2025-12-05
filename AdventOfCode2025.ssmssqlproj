@@ -45,38 +45,7 @@
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items>
-        <FileNode Name="input_D01P1.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>input_D01P1.txt</FullPath>
-        </FileNode>
-        <FileNode Name="input_D02P1.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>input_D02P1.txt</FullPath>
-        </FileNode>
-        <FileNode Name="input_D03P1.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>input_D03P1.txt</FullPath>
-        </FileNode>
-        <FileNode Name="input_D04P1.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>input_D04P1.txt</FullPath>
-        </FileNode>
-        <FileNode Name="input_D05P1.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>input_D05P1.txt</FullPath>
-        </FileNode>
-      </Items>
+      <Items />
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>

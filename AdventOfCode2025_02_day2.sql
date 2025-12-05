@@ -3,43 +3,40 @@ GO
 
 /* Day 2: BEGIN */
 
-/* Import flat file input.txt into table input.D02P1:
-
-DROP TABLE IF EXISTS input.D02P1;
+DROP TABLE IF EXISTS input.day02;
 GO
 
-CREATE TABLE input.D02P1 (
-	group_id INT IDENTITY (1, 1) CONSTRAINT PK_D02P1 PRIMARY KEY CLUSTERED,
-	group_range VARCHAR(100)
-);
+IF OBJECT_ID('input.day02', 'U') IS NULL
+BEGIN
+
+	CREATE TABLE input.day02 (
+		line NVARCHAR(MAX) NOT NULL
+	);
+
+	BULK INSERT input.day02 FROM '/var/aoc/input_D02P1.txt';
+
+END;
 GO
 
-INSERT INTO input.D02P1 (
-    group_range
-)
-VALUES ('989133-1014784'),('...
-GO
-
-*/
-GO
-
-DROP TABLE IF EXISTS #Ranges;
+DROP TABLE IF EXISTS dbo.day02_ranges;
 GO
 
 SELECT
-	group_range,
-	CONVERT(BIGINT, LEFT(group_range, CHARINDEX('-', group_range)-1)) AS range_start,
-	CONVERT(BIGINT, SUBSTRING(group_range, CHARINDEX('-', group_range)+1)) AS range_end
+	CONVERT(VARCHAR(100), SS.value) AS group_range,
+	CONVERT(BIGINT, LEFT(SS.value, CHARINDEX('-', SS.value) - 1)) AS range_start,
+	CONVERT(BIGINT, SUBSTRING(SS.value, CHARINDEX('-', SS.value) + 1)) AS range_end
 
-INTO #Ranges
-FROM input.D02P1;
+INTO dbo.day02_ranges
+
+FROM input.day02 I
+CROSS APPLY STRING_SPLIT(I.line, ',') SS;
 GO
 
 SET STATISTICS IO, TIME ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
-SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) / 2 FROM #Ranges R;
+SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) / 2 FROM dbo.day02_ranges R;
 
 WITH HalfSizes
 AS (
@@ -67,14 +64,14 @@ SELECT
 	SUM(IC.invalid_code) AS response1
 
 FROM InvalidCodes IC
-INNER JOIN #Ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
+INNER JOIN dbo.day02_ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
 GO
 
 SET STATISTICS IO, TIME ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
-SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) FROM #Ranges R;
+SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) FROM dbo.day02_ranges R;
 
 WITH Numbers
 AS (
@@ -106,7 +103,7 @@ SELECT
 	SUM(IC.invalid_code) AS response2
 
 FROM InvalidCodes IC
-INNER JOIN #Ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
+INNER JOIN dbo.day02_ranges R ON IC.invalid_code BETWEEN R.range_start AND R.range_end;
 GO
 
 /* Day 2: END */

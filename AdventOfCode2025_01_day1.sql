@@ -3,12 +3,27 @@ GO
 
 /* Day 1: BEGIN */
 
-/* Import flat file input.txt into table input.D01P1, then:
-
-ALTER TABLE input.D01P1 ADD PK INT NOT NULL IDENTITY (1, 1);
+DROP TABLE IF EXISTS input.day01;
 GO
 
-*/
+IF OBJECT_ID('input.day01', 'U') IS NULL
+BEGIN
+
+	CREATE TABLE input.day01 (
+		line NVARCHAR(5) NOT NULL
+	);
+
+	BULK INSERT input.day01 FROM '/var/aoc/input_D01P1.txt';
+
+	ALTER TABLE input.day01 ADD PK INT NOT NULL IDENTITY (1, 1);
+	ALTER TABLE input.day01 ADD direction CHAR(1) NULL;
+	ALTER TABLE input.day01 ADD distance SMALLINT NULL;
+
+	UPDATE input.day01
+	SET direction = LEFT(line, 1),
+		distance = CONVERT(SMALLINT, SUBSTRING(line, 2));
+
+END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D01_ExplainMove (
@@ -33,7 +48,7 @@ BEGIN
 		@direction = CASE WHEN direction = 'R' THEN 1 ELSE -1 END,
 		@distance = distance
 
-	FROM input.D01P1
+	FROM input.day01
 	WHERE PK = @move_id;
 
 	;WITH Numbers
@@ -61,7 +76,7 @@ BEGIN
 		(@initial_position + @direction * M.distance) % 100 AS final_position,
 		@zeroes_passed AS zeroes_passed
 
-	FROM input.D01P1 M
+	FROM input.day01 M
 	WHERE M.PK = @move_id;
 
 	UPDATE @ret

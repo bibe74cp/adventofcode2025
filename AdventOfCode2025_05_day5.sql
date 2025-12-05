@@ -3,10 +3,22 @@ GO
 
 /* Day 5: BEGIN */
 
-/* Import flat file input.txt into table input.D05P1 */
+DROP TABLE IF EXISTS input.day05;
 GO
 
-DROP TABLE IF EXISTS dbo.D05_Ranges;
+IF OBJECT_ID('input.day05', 'U') IS NULL
+BEGIN
+
+	CREATE TABLE input.day05 (
+		line NVARCHAR(50) NOT NULL
+	);
+
+	BULK INSERT input.day05 FROM '/var/aoc/input_D05P1.txt';
+
+END;
+GO
+
+DROP TABLE IF EXISTS dbo.day05_ranges;
 GO
 
 SELECT
@@ -14,9 +26,9 @@ SELECT
 	CONVERT(BIGINT, LEFT(I.line, CHARINDEX('-', I.line) - 1)) AS range_start,
 	CONVERT(BIGINT, SUBSTRING(I.line, CHARINDEX('-', I.line) + 1)) AS range_end
 
-INTO dbo.D05_Ranges
+INTO dbo.day05_ranges
 
-FROM input.D05P1 I
+FROM input.day05 I
 WHERE CHARINDEX('-', line) > 0;
 GO
 
@@ -28,16 +40,16 @@ BEGIN
 
 	UPDATE R1   
 	SET R1.range_start = R2.range_start
-	FROM dbo.D05_Ranges R1
-	INNER JOIN dbo.D05_Ranges R2 ON R1.range_start BETWEEN R2.range_start AND R2.range_end
+	FROM dbo.day05_ranges R1
+	INNER JOIN dbo.day05_ranges R2 ON R1.range_start BETWEEN R2.range_start AND R2.range_end
 		AND NOT (R1.range_start = R2.range_start AND R1.range_end = R2.range_end);
 
 	SELECT @extended_range_start = @@ROWCOUNT;
 
 	UPDATE R1   
 	SET R1.range_end = R2.range_end
-	FROM dbo.D05_Ranges R1
-	INNER JOIN dbo.D05_Ranges R2 ON R1.range_end BETWEEN R2.range_start AND R2.range_end
+	FROM dbo.day05_ranges R1
+	INNER JOIN dbo.day05_ranges R2 ON R1.range_end BETWEEN R2.range_start AND R2.range_end
 		AND NOT (R1.range_start = R2.range_start AND R1.range_end = R2.range_end);
 
 	SELECT @extended_range_end = @@ROWCOUNT;
@@ -53,13 +65,13 @@ AS (
 		range_start,
 		range_end
 
-	FROM dbo.D05_Ranges
+	FROM dbo.day05_ranges
 ),
 Ingredients
 AS (
 	SELECT
 		CONVERT(BIGINT, I.line) AS ingredient_id
-	FROM input.D05P1 I
+	FROM input.day05 I
 	WHERE LEN(I.line) > 0
 		AND CHARINDEX('-', I.line) = 0
 )

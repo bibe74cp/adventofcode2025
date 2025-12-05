@@ -3,11 +3,24 @@ GO
 
 /* Day 3: BEGIN */
 
-/* Import flat file input.txt into table input.D03P1 */
+DROP TABLE IF EXISTS input.day03;
 GO
 
+IF OBJECT_ID('input.day03', 'U') IS NULL
+BEGIN
+
+	CREATE TABLE input.day03 (
+		line NVARCHAR(150) NOT NULL
+	);
+
+	BULK INSERT input.day03 FROM '/var/aoc/input_D03P1.txt';
+
+END;
+GO
+
+
 CREATE OR ALTER FUNCTION dbo.usp_D03_GetHigherDigit (
-	@bank VARCHAR(100),
+	@line VARCHAR(100),
 	@remainder_length TINYINT
 )
 RETURNS @ret TABLE (
@@ -22,7 +35,7 @@ BEGIN
 
 	WHILE (@digit >= 0 AND @position = 0)
 	BEGIN
-		SET @position = CHARINDEX(CONVERT(CHAR(1), @digit), LEFT(@bank, LEN(@bank) - @remainder_length + 1));
+		SET @position = CHARINDEX(CONVERT(CHAR(1), @digit), LEFT(@line, LEN(@line) - @remainder_length + 1));
 
 		SET @digit = @digit - 1;
 	END;
@@ -30,14 +43,14 @@ BEGIN
 	INSERT INTO @ret (
 	    higher_digit,
 	    remainder
-	) VALUES (@digit + 1, SUBSTRING(@bank, @position + 1));
+	) VALUES (@digit + 1, SUBSTRING(@line, @position + 1));
 
 	RETURN;
 
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D03_GetJoltage (@bank VARCHAR(100), @depth TINYINT = 2)
+CREATE OR ALTER FUNCTION dbo.usp_D03_GetJoltage (@line VARCHAR(100), @depth TINYINT = 2)
 RETURNS BIGINT
 AS
 BEGIN
@@ -47,17 +60,17 @@ BEGIN
 	;WITH Tree
 	AS (
 		SELECT
-			@bank AS bank,
+			@line AS line,
 			@depth AS depth,
 			CONVERT(VARCHAR(100), GHD.higher_digit) AS result,
 			GHD.remainder
 
-		FROM dbo.usp_D03_GetHigherDigit(@bank, @depth) GHD
+		FROM dbo.usp_D03_GetHigherDigit(@line, @depth) GHD
 
 		UNION ALL
 
 		SELECT
-			T.bank,
+			T.line,
 			CONVERT(TINYINT, T.depth - 1),
 			CONVERT(VARCHAR(100), T.result || GHD.higher_digit),
 			GHD.remainder
@@ -79,10 +92,10 @@ GO
 SET STATISTICS IO, TIME ON;
 
 SELECT
-	SUM(dbo.usp_D03_GetJoltage(B.bank, 2)) AS response1,
-	SUM(dbo.usp_D03_GetJoltage(B.bank, 12)) AS response2
+	SUM(dbo.usp_D03_GetJoltage(B.line, 2)) AS response1,
+	SUM(dbo.usp_D03_GetJoltage(B.line, 12)) AS response2
 
-FROM input.D03P1 B;
+FROM input.day03 B;
 GO
 
 /* Day 3: END */
