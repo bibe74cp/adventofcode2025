@@ -1,6 +1,9 @@
 USE AdventOfCode2025;
 GO
 
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
+
 /* Day 2: BEGIN */
 
 DROP TABLE IF EXISTS input.day02;
@@ -13,7 +16,9 @@ BEGIN
 		line NVARCHAR(MAX) NOT NULL
 	);
 
-	BULK INSERT input.day02 FROM '/var/aoc/input_D02P1.txt';
+	/*
+	BULK INSERT input.day02 FROM '/var/aoc/sample_D02P1.txt';
+	--*/ BULK INSERT input.day02 FROM '/var/aoc/input_D02P1.txt';
 
 END;
 GO
@@ -32,11 +37,11 @@ FROM input.day02 I
 CROSS APPLY STRING_SPLIT(I.line, ',') SS;
 GO
 
-SET STATISTICS IO, TIME ON;
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
-SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) / 2 FROM dbo.day02_ranges R;
+SELECT @max_number_of_digits = CEILING(LOG10(MAX(R.range_end)) / 2) FROM dbo.day02_ranges R;
 
 WITH HalfSizes
 AS (
@@ -71,7 +76,7 @@ SET STATISTICS IO, TIME ON;
 
 DECLARE @max_number_of_digits BIGINT;
 
-SELECT @max_number_of_digits = ROUND(LOG10(MAX(R.range_end)) ,0) FROM dbo.day02_ranges R;
+SELECT @max_number_of_digits = CEILING(LOG10(MAX(R.range_end))) FROM dbo.day02_ranges R;
 
 WITH Numbers
 AS (

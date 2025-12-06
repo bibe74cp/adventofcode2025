@@ -1,6 +1,9 @@
 USE AdventOfCode2025;
 GO
 
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
+
 /* Day 5: BEGIN */
 
 DROP TABLE IF EXISTS input.day05;
@@ -13,7 +16,9 @@ BEGIN
 		line NVARCHAR(50) NOT NULL
 	);
 
-	BULK INSERT input.day05 FROM '/var/aoc/input_D05P1.txt';
+	/*
+	BULK INSERT input.day05 FROM '/var/aoc/sample_D05P1.txt';
+	--*/ BULK INSERT input.day05 FROM '/var/aoc/input_D05P1.txt';
 
 END;
 GO
@@ -57,7 +62,7 @@ BEGIN
 END;
 GO
 
-SET STATISTICS IO, TIME ON;
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 
 WITH Ranges
 AS (
@@ -74,21 +79,27 @@ AS (
 	FROM input.day05 I
 	WHERE LEN(I.line) > 0
 		AND CHARINDEX('-', I.line) = 0
+),
+Responses
+AS (
+	SELECT
+		COUNT(DISTINCT I.ingredient_id) AS response1, 0 AS response2
+
+	FROM Ingredients I
+	INNER JOIN Ranges R ON I.ingredient_id BETWEEN R.range_start AND R.range_end
+
+	UNION ALL
+
+	SELECT
+		0, SUM(R.range_end - R.range_start + 1)
+
+	FROM Ranges R
 )
 SELECT
-	'response1' AS response_id,
-	COUNT(DISTINCT I.ingredient_id) AS response_value
+	MAX(R.response1) AS response1,
+    MAX(R.response2) AS response2
 
-FROM Ingredients I
-INNER JOIN Ranges R ON I.ingredient_id BETWEEN R.range_start AND R.range_end
-
-UNION ALL
-
-SELECT 
-	'response2',
-	SUM(R.range_end - R.range_start + 1)
-
-FROM Ranges R;
+FROM Responses R;
 GO
 
 /* Day 5: END */

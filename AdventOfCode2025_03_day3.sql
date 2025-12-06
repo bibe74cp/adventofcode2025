@@ -1,6 +1,9 @@
 USE AdventOfCode2025;
 GO
 
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
+
 /* Day 3: BEGIN */
 
 DROP TABLE IF EXISTS input.day03;
@@ -13,7 +16,9 @@ BEGIN
 		line NVARCHAR(150) NOT NULL
 	);
 
-	BULK INSERT input.day03 FROM '/var/aoc/input_D03P1.txt';
+	/*
+	BULK INSERT input.day03 FROM '/var/aoc/sample_D03P1.txt';
+	--*/ BULK INSERT input.day03 FROM '/var/aoc/input_D03P1.txt';
 
 END;
 GO
@@ -89,7 +94,7 @@ BEGIN
 END;
 GO
 
-SET STATISTICS IO, TIME ON;
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 
 SELECT
 	SUM(dbo.usp_D03_GetJoltage(B.line, 2)) AS response1,

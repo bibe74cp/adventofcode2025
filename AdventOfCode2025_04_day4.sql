@@ -1,6 +1,9 @@
 USE AdventOfCode2025;
 GO
 
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
+
 /* Day 4: BEGIN */
 
 DROP TABLE IF EXISTS input.day04;
@@ -13,7 +16,9 @@ BEGIN
 		line NVARCHAR(150) NOT NULL
 	);
 
-	BULK INSERT input.day04 FROM '/var/aoc/input_D04P1.txt';
+	/*
+	BULK INSERT input.day04 FROM '/var/aoc/sample_D04P1.txt';
+	--*/ BULK INSERT input.day04 FROM '/var/aoc/input_D04P1.txt';
 
 	ALTER TABLE input.day04 ADD PK INT NOT NULL IDENTITY (1, 1);
 
@@ -111,7 +116,7 @@ BEGIN
 END;
 GO
 
-SET STATISTICS IO, TIME ON;
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 
 WITH Cols
 AS (

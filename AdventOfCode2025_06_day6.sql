@@ -1,6 +1,9 @@
 USE AdventOfCode2025;
 GO
 
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
+
 /* Day 6: BEGIN */
 
 DROP TABLE IF EXISTS input.day06;
@@ -13,27 +16,14 @@ BEGIN
 		line NVARCHAR(4000) NOT NULL
 	);
 
-	BULK INSERT input.day06 FROM '/var/aoc/input_D06P1.txt';
+	/*
+	BULK INSERT input.day06 FROM '/var/aoc/sample_D06P1.txt';
+	--*/ BULK INSERT input.day06 FROM '/var/aoc/input_D06P1.txt';
 
 	ALTER TABLE input.day06 ADD PK INT NOT NULL IDENTITY (1, 1);
 
 END;
 GO
-
-/* Sample data
-
-TRUNCATE TABLE input.day06;
-
-INSERT INTO input.day06 (
-    line
-)
-VALUES (N'123 328  51 64 '),
-	(N' 45 64  387 23 '),
-	(N'  6 98  215 314'),
-	(N'*   +   *   +  ');
-GO
-
-*/
 
 DROP TABLE IF EXISTS dbo.day06_data;
 GO
@@ -105,7 +95,7 @@ BEGIN
 END;
 GO
 
-SET STATISTICS IO, TIME ON;
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 GO
 
 SELECT
