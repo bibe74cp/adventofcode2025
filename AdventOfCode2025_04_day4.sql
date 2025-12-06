@@ -17,11 +17,13 @@ BEGIN
 
 	ALTER TABLE input.day04 ADD PK INT NOT NULL IDENTITY (1, 1);
 
-	DROP TABLE IF EXISTS input.day04_backup;
-
-	SELECT * INTO input.day04_backup FROM input.day04;
-
 END;
+GO
+
+DROP TABLE IF EXISTS dbo.day04_clone;
+GO
+
+SELECT * INTO dbo.day04_clone FROM input.day04;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRoll (@line NVARCHAR(200), @position SMALLINT)
@@ -79,7 +81,7 @@ BEGIN
 		)
 
 	FROM Lines L
-	INNER JOIN input.day04 I ON I.PK = L.linePK;
+	INNER JOIN dbo.day04_clone I ON I.PK = L.linePK;
 
 	RETURN @rollCount;
 
@@ -97,7 +99,7 @@ BEGIN
 	SELECT
 		@line = line
 
-	FROM input.day04 I
+	FROM dbo.day04_clone I
 	WHERE I.PK = @linePK;
 
 	IF SUBSTRING(@line, @position, 1) <> N'@' RETURN 0;
@@ -121,7 +123,7 @@ AS (
 SELECT
 	SUM(dbo.usp_D04_CheckRollAvailability(I.PK, C.col)) AS response1
 
-FROM input.day04 I,
+FROM dbo.day04_clone I,
 	Cols C;
 GO
 
@@ -149,7 +151,7 @@ BEGIN
 
 	INTO #D04_Rolls
 
-	FROM input.day04 I,
+	FROM dbo.day04_clone I,
 		Cols C;
 
 	DROP TABLE IF EXISTS #D04_RollsToRemove;
@@ -170,9 +172,9 @@ BEGIN
 
 	FROM #D04_RollsToRemove RTR;
 
-	TRUNCATE TABLE input.day04;
+	TRUNCATE TABLE dbo.day04_clone;
 
-	SET IDENTITY_INSERT input.day04 ON;
+	SET IDENTITY_INSERT dbo.day04_clone ON;
 
 	WITH NewRolls
 	AS (
@@ -184,7 +186,7 @@ BEGIN
 		FROM #D04_Rolls R
 		LEFT JOIN #D04_RollsToRemove RTR ON RTR.linePK = R.linePK AND RTR.col = R.col
 	)
-	INSERT INTO input.day04 (
+	INSERT INTO dbo.day04_clone (
 		PK,
 	    line
 	)
@@ -197,7 +199,7 @@ BEGIN
 	GROUP BY NR.linePK
 	ORDER BY NR.linePK;
 
-	SET IDENTITY_INSERT input.day04 OFF;
+	SET IDENTITY_INSERT dbo.day04_clone OFF;
 
 END;
 GO
@@ -206,10 +208,10 @@ SET STATISTICS IO, TIME OFF;
 
 SET NOCOUNT ON;
 
-DROP TABLE IF EXISTS input.day04;
+DROP TABLE IF EXISTS dbo.day04_clone;
 GO
 
-SELECT * INTO input.day04 FROM input.day04_backup;
+SELECT * INTO dbo.day04_clone FROM input.day04;
 GO
 
 DECLARE @iteration INT = 0,
@@ -217,7 +219,7 @@ DECLARE @iteration INT = 0,
 	@rollsRemovedTotal INT = 0,
 	@totalRolls INT;
 
-SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM input.day04;
+SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM dbo.day04_clone;
 
 WHILE (@rollsRemoved <> 0)
 BEGIN
@@ -229,17 +231,11 @@ BEGIN
 
 	RAISERROR ('Iteration %d: %d rolls out of %d removed. Total rolls removed: %d', 0, 1, @iteration, @rollsRemoved, @totalRolls, @rollsRemovedTotal) WITH NOWAIT;
 
-	SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM input.day04;
+	SELECT @totalRolls = SUM(REGEXP_COUNT(line, '@')) FROM dbo.day04_clone;
 
 END;
 
 SELECT @rollsRemovedTotal AS response2;
-GO
-
-DROP TABLE IF EXISTS input.day04;
-GO
-
-SELECT * INTO input.day04 FROM input.day04_backup;
 GO
 
 /* Day 4: END */
