@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* Day 2 (https://adventofcode.com/2025/day/2): BEGIN */
+/* --- Day 2: Gift Shop --- (https://adventofcode.com/2025/day/2): BEGIN */
 
 DROP TABLE IF EXISTS input.day02;
 GO
