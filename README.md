@@ -35,8 +35,17 @@ adventofcode2025
 
 How it works:
 
-1. Place each day's input file (not provided) in the day's folder. You can also copy a file with the sample data.
+1. Create a .env file with the following content:
+	
+	MSSQL_SA_PASSWORD="qwerty"
 
-2. cd into init/, then run docker-cp.sh to properly copy each day's files into the Docker container
+2. Start the Docker container:
+	
+	$ sudo docker-compose up -d
 
-3. Open the solution file (with SQL Server Management Studio 22) or the project file (with any version of SSMS)
+3. cd into init/ and place each day's input.txt file (not provided) into init/day the day's folder.
+You can also create a sample.txt file with the sample data.
+
+4. Run docker-cp.sh to properly copy each day's files into the Docker container
+
+5. Open the solution file (with SQL Server Management Studio 22) or the project file (with any version of SSMS)
