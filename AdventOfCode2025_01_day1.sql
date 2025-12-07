@@ -21,7 +21,7 @@ BEGIN
 	--*/ BULK INSERT input.day01 FROM '/var/aoc/input_D01P1.txt';
 	
 
-	ALTER TABLE input.day01 ADD PK INT NOT NULL IDENTITY (1, 1);
+	ALTER TABLE input.day01 ADD line_id INT NOT NULL IDENTITY (1, 1);
 	ALTER TABLE input.day01 ADD direction CHAR(1) NULL;
 	ALTER TABLE input.day01 ADD distance SMALLINT NULL;
 
@@ -55,7 +55,7 @@ BEGIN
 		@distance = distance
 
 	FROM input.day01
-	WHERE PK = @move_id;
+	WHERE line_id = @move_id;
 
 	;WITH Numbers
 	AS (
@@ -76,14 +76,14 @@ BEGIN
 	    zeroes_passed
 	)
 	SELECT
-		M.PK AS move_id,
+		M.line_id AS move_id,
 		@initial_position AS initial_position,
 		M.direction || M.distance AS move_code,
 		(@initial_position + @direction * M.distance) % 100 AS final_position,
 		@zeroes_passed AS zeroes_passed
 
 	FROM input.day01 M
-	WHERE M.PK = @move_id;
+	WHERE M.line_id = @move_id;
 
 	UPDATE @ret
 	SET final_position = final_position + 100

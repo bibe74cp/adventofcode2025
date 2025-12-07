@@ -20,7 +20,7 @@ BEGIN
 	BULK INSERT input.day04 FROM '/var/aoc/sample_D04P1.txt';
 	--*/ BULK INSERT input.day04 FROM '/var/aoc/input_D04P1.txt';
 
-	ALTER TABLE input.day04 ADD PK INT NOT NULL IDENTITY (1, 1);
+	ALTER TABLE input.day04 ADD line_id INT NOT NULL IDENTITY (1, 1);
 
 END;
 GO
@@ -65,7 +65,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CountAdjacentRolls (@linePK INT, @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.usp_D04_CountAdjacentRolls (@line_id INT, @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -75,25 +75,25 @@ BEGIN
 	WITH Lines
 	AS (
 		SELECT
-			@linePK + GS.value AS linePK
+			@line_id + GS.value AS line_id
 
 		FROM GENERATE_SERIES(-1, 1, 1) GS
 	)
 	SELECT
 		@rollCount = SUM(
 			dbo.usp_D04_CountRolls(I.line, @position)
-			- CASE WHEN I.PK = @linePK AND SUBSTRING(I.line, @position, 1) = N'@' THEN 1 ELSE 0 END
+			- CASE WHEN I.line_id = @line_id AND SUBSTRING(I.line, @position, 1) = N'@' THEN 1 ELSE 0 END
 		)
 
 	FROM Lines L
-	INNER JOIN dbo.day04_clone I ON I.PK = L.linePK;
+	INNER JOIN dbo.day04_clone I ON I.line_id = L.line_id;
 
 	RETURN @rollCount;
 
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRollAvailability (@linePK INT, @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRollAvailability (@line_id INT, @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -105,11 +105,11 @@ BEGIN
 		@line = line
 
 	FROM dbo.day04_clone I
-	WHERE I.PK = @linePK;
+	WHERE I.line_id = @line_id;
 
 	IF SUBSTRING(@line, @position, 1) <> N'@' RETURN 0;
 
-	SELECT @adjacentRolls = dbo.usp_D04_CountAdjacentRolls(@linePK, @position);
+	SELECT @adjacentRolls = dbo.usp_D04_CountAdjacentRolls(@line_id, @position);
 
 	RETURN CASE WHEN @adjacentRolls < 4 THEN 1 ELSE 0 END;
 
@@ -126,7 +126,7 @@ AS (
 	FROM GENERATE_SERIES(1, 136, 1) GS
 )
 SELECT
-	SUM(dbo.usp_D04_CheckRollAvailability(I.PK, C.col)) AS response1
+	SUM(dbo.usp_D04_CheckRollAvailability(I.line_id, C.col)) AS response1
 
 FROM dbo.day04_clone I,
 	Cols C;
@@ -150,7 +150,7 @@ BEGIN
 		FROM GENERATE_SERIES(1, 136, 1) GS
 	)
 	SELECT
-		I.PK AS linePK,
+		I.line_id,
 		C.col,
 		SUBSTRING(I.line, C.col, 1) AS slotContent
 
@@ -162,7 +162,7 @@ BEGIN
 	DROP TABLE IF EXISTS #D04_RollsToRemove;
 
 	SELECT
-		R.linePK,
+		R.line_id,
         R.col,
 		'.' AS slotContent
 
@@ -170,7 +170,7 @@ BEGIN
 
 	FROM #D04_Rolls R
 	WHERE R.slotContent = '@'
-		AND dbo.usp_D04_CheckRollAvailability(R.linePK, R.col) = 1;
+		AND dbo.usp_D04_CheckRollAvailability(R.line_id, R.col) = 1;
 
 	SELECT
 		@rollsRemoved = COUNT(1)
@@ -184,25 +184,25 @@ BEGIN
 	WITH NewRolls
 	AS (
 		SELECT
-			R.linePK,
+			R.line_id,
 			R.col,
 			COALESCE(RTR.slotContent, R.slotContent) AS slotContent
 
 		FROM #D04_Rolls R
-		LEFT JOIN #D04_RollsToRemove RTR ON RTR.linePK = R.linePK AND RTR.col = R.col
+		LEFT JOIN #D04_RollsToRemove RTR ON RTR.line_id = R.line_id AND RTR.col = R.col
 	)
 	INSERT INTO dbo.day04_clone (
-		PK,
+		line_id,
 	    line
 	)
 	SELECT
-		NR.linePK AS PK,
+		NR.line_id,
 		STRING_AGG(CAST(NR.slotContent AS VARCHAR(1)), '')
 			WITHIN GROUP (ORDER BY NR.col) AS line
 
 	FROM NewRolls NR
-	GROUP BY NR.linePK
-	ORDER BY NR.linePK;
+	GROUP BY NR.line_id
+	ORDER BY NR.line_id;
 
 	SET IDENTITY_INSERT dbo.day04_clone OFF;
 

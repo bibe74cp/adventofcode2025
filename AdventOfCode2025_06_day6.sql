@@ -20,7 +20,7 @@ BEGIN
 	BULK INSERT input.day06 FROM '/var/aoc/sample_D06P1.txt';
 	--*/ BULK INSERT input.day06 FROM '/var/aoc/input_D06P1.txt';
 
-	ALTER TABLE input.day06 ADD PK INT NOT NULL IDENTITY (1, 1);
+	ALTER TABLE input.day06 ADD line_id INT NOT NULL IDENTITY (1, 1);
 
 END;
 GO
@@ -66,7 +66,7 @@ BEGIN
 
 	SELECT
 		Op.operation_id,
-		I.PK AS row,
+		I.line_id AS row,
 		SUBSTRING(I.line, Op.operator_col, COALESCE(NextOp.operator_col, LEN(I.line) + 1) - Op.operator_col) AS value,
 		NULL AS operator,
 		CONVERT(BIGINT, SUBSTRING(I.line, Op.operator_col, COALESCE(NextOp.operator_col, LEN(I.line) + 1) - Op.operator_col)) AS number
@@ -79,7 +79,7 @@ BEGIN
 	ALTER TABLE dbo.day06_data ALTER COLUMN operation_id BIGINT NOT NULL;
 	ALTER TABLE dbo.day06_data ALTER COLUMN row BIGINT NOT NULL;
 
-	ALTER TABLE dbo.day06_data ADD CONSTRAINT PK_day06_data PRIMARY KEY CLUSTERED (operation_id, row);
+	ALTER TABLE dbo.day06_data ADD CONSTRAINT line_id_day06_data PRIMARY KEY CLUSTERED (operation_id, row);
 
 	ALTER TABLE dbo.day06_data ADD col1_digit VARCHAR(1) NULL;
 	ALTER TABLE dbo.day06_data ADD col2_digit VARCHAR(1) NULL;

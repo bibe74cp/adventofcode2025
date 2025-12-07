@@ -20,7 +20,7 @@ BEGIN
 	BULK INSERT input.day07 FROM '/var/aoc/sample_D07P1.txt';
 	--*/ BULK INSERT input.day07 FROM '/var/aoc/input_D07P1.txt';
 
-	ALTER TABLE input.day07 ADD PK INT NOT NULL IDENTITY (1, 1);
+	ALTER TABLE input.day07 ADD line_id INT NOT NULL IDENTITY (1, 1);
 
 END;
 GO
@@ -86,7 +86,7 @@ BEGIN
 
 		FROM input.day07 I
 		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
-		WHERE I.PK = @line_id
+		WHERE I.line_id = @line_id
 	)
 	SELECT
 		@splits = COUNT(1)
@@ -112,7 +112,7 @@ BEGIN
 
 		FROM input.day07 I
 		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
-		WHERE I.PK = @line_id
+		WHERE I.line_id = @line_id
 	),
 	Splits
 	AS (
@@ -164,28 +164,31 @@ BEGIN
 END;
 GO
 
+SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
+GO
+
 WITH Tree
 AS (
 	SELECT
-		I.PK AS line_id,
+		I.line_id,
 		I.line,
 		CONVERT(NVARCHAR(142), REPLACE(I.line, 'S', '|')) AS processed_line,
 		CONVERT(BIGINT, 0) AS splits_count
 		
 	FROM input.day07 I
-	WHERE I.PK = 1
+	WHERE I.line_id = 1
 
 	UNION ALL
 
 	SELECT
-		I.PK,
+		I.line_id,
 		I.line,
 		PL.processed_line,
 		PL.splits_count
 
 	FROM Tree T
-	INNER JOIN input.day07 I ON I.PK = T.line_id + 1
-	CROSS APPLY dbo.usp_D07_ProcessLine(T.processed_line, I.PK) PL
+	INNER JOIN input.day07 I ON I.line_id = T.line_id + 1
+	CROSS APPLY dbo.usp_D07_ProcessLine(T.processed_line, I.line_id) PL
 )
 SELECT
 	SUM(T.splits_count) AS response1
@@ -205,13 +208,12 @@ INTO dbo.day07_positions
 
 FROM input.day07 I
 CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
-WHERE I.PK = 1;
+WHERE I.line_id = 1;
 GO
 
-/* declare variables */
 DECLARE @line_id INT
 
-DECLARE curLines CURSOR FAST_FORWARD READ_ONLY FOR SELECT I.PK FROM input.day07 I ORDER BY PK
+DECLARE curLines CURSOR FAST_FORWARD READ_ONLY FOR SELECT I.line_id FROM input.day07 I ORDER BY line_id
 
 OPEN curLines
 
@@ -228,7 +230,7 @@ BEGIN
 
 		FROM input.day07 I
 		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
-		WHERE I.PK = @line_id
+		WHERE I.line_id = @line_id
 	),
 	Splits
 	AS (
