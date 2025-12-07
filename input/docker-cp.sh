@@ -1,8 +1,32 @@
 #!/bin/sh
-docker cp day01/sample.txt sql2025:/var/aoc/sample_D01P1.txt && docker cp day01/input.txt sql2025:/var/aoc/input_D01P1.txt
-docker cp day02/sample.txt sql2025:/var/aoc/sample_D02P1.txt && docker cp day02/input.txt sql2025:/var/aoc/input_D02P1.txt
-docker cp day03/sample.txt sql2025:/var/aoc/sample_D03P1.txt && docker cp day03/input.txt sql2025:/var/aoc/input_D03P1.txt
-docker cp day04/sample.txt sql2025:/var/aoc/sample_D04P1.txt && docker cp day04/input.txt sql2025:/var/aoc/input_D04P1.txt
-docker cp day05/sample.txt sql2025:/var/aoc/sample_D05P1.txt && docker cp day05/input.txt sql2025:/var/aoc/input_D05P1.txt
-docker cp day06/sample.txt sql2025:/var/aoc/sample_D06P1.txt && docker cp day06/input.txt sql2025:/var/aoc/input_D06P1.txt
-docker cp day07/sample.txt sql2025:/var/aoc/sample_D07P1.txt && docker cp day07/input.txt sql2025:/var/aoc/input_D07P1.txt
+#
+# docker-cp.sh - Copy sample and input files into the docker container
+#
+# Generate this file's content with the following script:
+#
+# for d in $(seq 1 12); do dd=$(echo "0$d" |sed -E 's/.*(..)/\1/'); echo "[ -f input/day$dd/sample.txt ] && docker cp input/day$dd/sample.txt sql2025:/var/aoc/sample_D${dd}P1.txt"; echo "[ -f input/day$dd/input.txt ] && docker cp input/day$dd/input.txt sql2025:/var/aoc/input_D${dd}P1.txt"; done
+#
+[ -f input/day01/sample.txt ] && docker cp input/day01/sample.txt sql2025:/var/aoc/sample_D01P1.txt
+[ -f input/day01/input.txt ] && docker cp input/day01/input.txt sql2025:/var/aoc/input_D01P1.txt
+[ -f input/day02/sample.txt ] && docker cp input/day02/sample.txt sql2025:/var/aoc/sample_D02P1.txt
+[ -f input/day02/input.txt ] && docker cp input/day02/input.txt sql2025:/var/aoc/input_D02P1.txt
+[ -f input/day03/sample.txt ] && docker cp input/day03/sample.txt sql2025:/var/aoc/sample_D03P1.txt
+[ -f input/day03/input.txt ] && docker cp input/day03/input.txt sql2025:/var/aoc/input_D03P1.txt
+[ -f input/day04/sample.txt ] && docker cp input/day04/sample.txt sql2025:/var/aoc/sample_D04P1.txt
+[ -f input/day04/input.txt ] && docker cp input/day04/input.txt sql2025:/var/aoc/input_D04P1.txt
+[ -f input/day05/sample.txt ] && docker cp input/day05/sample.txt sql2025:/var/aoc/sample_D05P1.txt
+[ -f input/day05/input.txt ] && docker cp input/day05/input.txt sql2025:/var/aoc/input_D05P1.txt
+[ -f input/day06/sample.txt ] && docker cp input/day06/sample.txt sql2025:/var/aoc/sample_D06P1.txt
+[ -f input/day06/input.txt ] && docker cp input/day06/input.txt sql2025:/var/aoc/input_D06P1.txt
+[ -f input/day07/sample.txt ] && docker cp input/day07/sample.txt sql2025:/var/aoc/sample_D07P1.txt
+[ -f input/day07/input.txt ] && docker cp input/day07/input.txt sql2025:/var/aoc/input_D07P1.txt
+[ -f input/day08/sample.txt ] && docker cp input/day08/sample.txt sql2025:/var/aoc/sample_D08P1.txt
+[ -f input/day08/input.txt ] && docker cp input/day08/input.txt sql2025:/var/aoc/input_D08P1.txt
+[ -f input/day09/sample.txt ] && docker cp input/day09/sample.txt sql2025:/var/aoc/sample_D09P1.txt
+[ -f input/day09/input.txt ] && docker cp input/day09/input.txt sql2025:/var/aoc/input_D09P1.txt
+[ -f input/day10/sample.txt ] && docker cp input/day10/sample.txt sql2025:/var/aoc/sample_D10P1.txt
+[ -f input/day10/input.txt ] && docker cp input/day10/input.txt sql2025:/var/aoc/input_D10P1.txt
+[ -f input/day11/sample.txt ] && docker cp input/day11/sample.txt sql2025:/var/aoc/sample_D11P1.txt
+[ -f input/day11/input.txt ] && docker cp input/day11/input.txt sql2025:/var/aoc/input_D11P1.txt
+[ -f input/day12/sample.txt ] && docker cp input/day12/sample.txt sql2025:/var/aoc/sample_D12P1.txt
+[ -f input/day12/input.txt ] && docker cp input/day12/input.txt sql2025:/var/aoc/input_D12P1.txt
