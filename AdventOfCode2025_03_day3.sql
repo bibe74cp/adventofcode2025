@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* Day 3: BEGIN */
+/* Day 3 (https://adventofcode.com/2025/day/3): BEGIN */
 
 DROP TABLE IF EXISTS input.day03;
 GO
@@ -13,7 +13,7 @@ IF OBJECT_ID('input.day03', 'U') IS NULL
 BEGIN
 
 	CREATE TABLE input.day03 (
-		line NVARCHAR(150) NOT NULL
+		line VARCHAR(MAX) NOT NULL
 	);
 
 	/*

@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* Day 4: BEGIN */
+/* Day 4 (https://adventofcode.com/2025/day/4): BEGIN */
 
 DROP TABLE IF EXISTS input.day04;
 GO
@@ -13,7 +13,7 @@ IF OBJECT_ID('input.day04', 'U') IS NULL
 BEGIN
 
 	CREATE TABLE input.day04 (
-		line NVARCHAR(150) NOT NULL
+		line VARCHAR(MAX) NOT NULL
 	);
 
 	/*
@@ -31,7 +31,7 @@ GO
 SELECT * INTO dbo.day04_clone FROM input.day04;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRoll (@line NVARCHAR(200), @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRoll (@line VARCHAR(200), @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -41,7 +41,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CountRolls (@line NVARCHAR(200), @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.usp_D04_CountRolls (@line VARCHAR(200), @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -98,7 +98,7 @@ RETURNS INT
 AS
 BEGIN
 
-	DECLARE @line NVARCHAR(200),
+	DECLARE @line VARCHAR(200),
 		@adjacentRolls INT;
 
 	SELECT

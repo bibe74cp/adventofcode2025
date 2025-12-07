@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* Day 2: BEGIN */
+/* Day 2 (https://adventofcode.com/2025/day/2): BEGIN */
 
 DROP TABLE IF EXISTS input.day02;
 GO
@@ -13,7 +13,7 @@ IF OBJECT_ID('input.day02', 'U') IS NULL
 BEGIN
 
 	CREATE TABLE input.day02 (
-		line NVARCHAR(MAX) NOT NULL
+		line VARCHAR(MAX) NOT NULL
 	);
 
 	/*
@@ -99,7 +99,7 @@ AS (
 InvalidCodes
 AS (
 	SELECT DISTINCT
-		CONVERT(BIGINT, REPLICATE(CONVERT(NVARCHAR(10), GS.value), C.repetitions)) AS invalid_code
+		CONVERT(BIGINT, REPLICATE(CONVERT(VARCHAR(10), GS.value), C.repetitions)) AS invalid_code
 
 	FROM Combinations C
 	CROSS APPLY GENERATE_SERIES(C.range_start, C.range_end, CONVERT(BIGINT, 1)) GS

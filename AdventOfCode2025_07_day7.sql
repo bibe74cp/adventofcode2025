@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* Day 7: BEGIN */
+/* Day 7 (https://adventofcode.com/2025/day/7): BEGIN */
 
 DROP TABLE IF EXISTS input.day07;
 GO
@@ -13,7 +13,7 @@ IF OBJECT_ID('input.day07', 'U') IS NULL
 BEGIN
 
 	CREATE TABLE input.day07 (
-		line NVARCHAR(142) NOT NULL
+		line VARCHAR(MAX) NOT NULL
 	);
 
 	/*
@@ -26,11 +26,11 @@ END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D07_SplitLine (
-	@input_line NVARCHAR(142)
+	@input_line VARCHAR(142)
 )
 RETURNS @ret TABLE (
 	position INT,
-	content NVARCHAR(1)
+	content VARCHAR(1)
 )
 AS
 BEGIN
@@ -58,11 +58,11 @@ END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D07_ProcessLine (
-	@input_line NVARCHAR(142),
+	@input_line VARCHAR(142),
 	@line_id BIGINT
 )
 RETURNS @ret TABLE (
-	processed_line NVARCHAR(142),
+	processed_line VARCHAR(142),
 	splits_count BIGINT
 )
 AS
@@ -172,7 +172,7 @@ AS (
 	SELECT
 		I.line_id,
 		I.line,
-		CONVERT(NVARCHAR(142), REPLACE(I.line, 'S', '|')) AS processed_line,
+		CONVERT(VARCHAR(142), REPLACE(I.line, 'S', '|')) AS processed_line,
 		CONVERT(BIGINT, 0) AS splits_count
 		
 	FROM input.day07 I
