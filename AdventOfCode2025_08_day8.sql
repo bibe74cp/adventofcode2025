@@ -93,9 +93,6 @@ FROM dbo.day08_boxes B1
 INNER JOIN dbo.day08_boxes B2 ON B2.box_id < B1.box_id;
 GO
 
-DROP TABLE IF EXISTS dbo.day08_circuits;
-GO
-
 SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 GO
 
