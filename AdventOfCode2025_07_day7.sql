@@ -26,7 +26,7 @@ END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D07_SplitLine (
-	@input_line VARCHAR(142)
+	@input_line VARCHAR(MAX)
 )
 RETURNS @ret TABLE (
 	position INT,
@@ -35,22 +35,31 @@ RETURNS @ret TABLE (
 AS
 BEGIN
 
-	WITH Positions
+	WITH Cols
 	AS (
 		SELECT
-			GS.value AS position
+			1 AS position,
+			SUBSTRING(@input_line, 1, 1) AS content
 
-		FROM GENERATE_SERIES(1, LEN(@input_line), 1) GS
+		UNION ALL
+
+		SELECT
+			C.position + 1,
+			SUBSTRING(@input_line, C.position + 1, 1)
+
+		FROM Cols C
+		WHERE C.position < LEN(@input_line)
 	)
 	INSERT INTO @ret (
-		position,
+	    position,
 	    content
 	)
 	SELECT
-		P.position,
-		SUBSTRING(@input_line, P.position, 1) AS content
+		C.position,
+        C.content
 
-	FROM Positions P;
+	FROM Cols C
+	OPTION (MAXRECURSION 0);
 
 	RETURN;
 
@@ -58,11 +67,11 @@ END;
 GO
 
 CREATE OR ALTER FUNCTION dbo.usp_D07_ProcessLine (
-	@input_line VARCHAR(142),
+	@input_line VARCHAR(MAX),
 	@line_id BIGINT
 )
 RETURNS @ret TABLE (
-	processed_line VARCHAR(142),
+	processed_line VARCHAR(MAX),
 	splits_count BIGINT
 )
 AS
@@ -122,7 +131,8 @@ BEGIN
 	OutputBeams
 	AS (
 		SELECT
-			I.position
+			I.position,
+			0 AS splits_count
 
 		FROM InputLine I
 		INNER JOIN Operator O ON O.position = I.position
@@ -132,7 +142,8 @@ BEGIN
 		UNION ALL
 
 		SELECT
-			I.position + S.offset
+			I.position + S.offset,
+			1
 
 		FROM InputLine I
 		INNER JOIN Operator O ON O.position = I.position
@@ -172,7 +183,7 @@ AS (
 	SELECT
 		I.line_id,
 		I.line,
-		CONVERT(VARCHAR(142), REPLACE(I.line, 'S', '|')) AS processed_line,
+		CONVERT(VARCHAR(MAX), REPLACE(I.line, 'S', '|')) AS processed_line,
 		CONVERT(BIGINT, 0) AS splits_count
 		
 	FROM input.day07 I
@@ -190,6 +201,12 @@ AS (
 	INNER JOIN input.day07 I ON I.line_id = T.line_id + 1
 	CROSS APPLY dbo.usp_D07_ProcessLine(T.processed_line, I.line_id) PL
 )
+/*
+SELECT T.processed_line
+FROM Tree T
+ORDER BY T.line_id
+OPTION (MAXRECURSION 5000);
+*/
 SELECT
 	SUM(T.splits_count) AS response1
 
