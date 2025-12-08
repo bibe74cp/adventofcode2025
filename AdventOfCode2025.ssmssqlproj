@@ -6,6 +6,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="2025-12-11.CompanyMeetingCP.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2025-12-11.CompanyMeetingCP.sql</FullPath>
+        </FileNode>
         <FileNode Name="AdventOfCode2025_00_setup.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
