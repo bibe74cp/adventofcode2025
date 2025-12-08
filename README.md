@@ -37,7 +37,7 @@ How it works:
 
 1. Create a .env file with the following content:
 	
-	MSSQL_SA_PASSWORD="qwerty"
+	MSSQL_SA_PASSWORD="qwerty" :smirk:
 
 2. Start the Docker container:
 	
