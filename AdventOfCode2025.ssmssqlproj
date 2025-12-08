@@ -2,22 +2,7 @@
 <SqlWorkbenchSqlProject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="AdventOfCode2025">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items>
-        <ConnectionNode Name="localhost,1433:sa">
-          <Created>2025-12-07T19:43:33.7762727+01:00</Created>
-          <Type>SQL</Type>
-          <Server>localhost,1433</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB>AdventOfCode2025</InitialDB>
-          <LoginTimeout>15</LoginTimeout>
-          <TrustServerCertificate>True</TrustServerCertificate>
-          <EncryptionOption>True</EncryptionOption>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-      </Items>
+      <Items />
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
@@ -64,9 +49,9 @@
           <FullPath>AdventOfCode2025_06_day6.sql</FullPath>
         </FileNode>
         <FileNode Name="AdventOfCode2025_07_day7.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost,1433:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost,1433</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
           <FullPath>AdventOfCode2025_07_day7.sql</FullPath>
         </FileNode>
         <FileNode Name="AdventOfCode2025_08_day8.sql">
