@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* --- Day 4: Printing Department --- (https://adventofcode.com/2025/day/4): BEGIN */
+/* --- Day 4: Printing Department --- (https://adventofcode.com/2025/day/4): BEGIN */ -- 4'01", one extra table
 
 DROP TABLE IF EXISTS input.day04;
 GO

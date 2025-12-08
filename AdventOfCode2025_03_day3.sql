@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* --- Day 3: Lobby --- (https://adventofcode.com/2025/day/3): BEGIN */
+/* --- Day 3: Lobby --- (https://adventofcode.com/2025/day/3): BEGIN */ -- <1", no extra tables
 
 DROP TABLE IF EXISTS input.day03;
 GO

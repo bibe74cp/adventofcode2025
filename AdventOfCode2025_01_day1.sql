@@ -4,7 +4,7 @@ GO
 SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
 GO
 
-/* --- Day 1: Secret Entrance --- (https://adventofcode.com/2025/day/1): BEGIN */
+/* --- Day 1: Secret Entrance --- (https://adventofcode.com/2025/day/1): BEGIN */ -- 28", no extra tables
 
 DROP TABLE IF EXISTS input.day01;
 GO
