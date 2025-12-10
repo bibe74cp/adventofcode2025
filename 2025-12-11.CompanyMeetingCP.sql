@@ -16,31 +16,35 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	/*
 	BULK INSERT input.day08 FROM '/var/aoc/sample_D08P1.txt';
-	--*/ BULK INSERT input.day08 FROM '/var/aoc/input_D08P1.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_davide.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_moreno.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_emanuele.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_mirko.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_luca.txt';
 
 	ALTER TABLE input.day08 ADD line_id INT NOT NULL IDENTITY (1, 1);
 
 END;
 GO
 
--- 1st problem: After making the first 10 (1000) connections, multiply the length of the three longest circuits
-
-DROP TABLE IF EXISTS dbo.day08_boxes;
+-- List input content
+SELECT * FROM input.day08;
 GO
 
-CREATE TABLE dbo.day08_boxes (
-	box_id INT NOT NULL,
-	box_coordinates VARCHAR(MAX) NOT NULL,
-	x INT NULL,
-	y INT NULL,
-	z INT NULL,
-	coordinates_vector VECTOR(3) NULL,
-	circuit_id INT NULL
-);
+-- Split coordinates
+SELECT
+	D.line_id,
+	D.line,
+	CONVERT(INT, SS.value) AS value,
+	ROW_NUMBER() OVER (PARTITION BY D.line_id ORDER BY (SELECT 1)) AS rn
+
+FROM input.day08 D
+CROSS APPLY STRING_SPLIT(D.line, ',') SS;
 GO
 
+-- Pack everything up, showing x, y and z coordinates of each input line
 WITH Coordinates
 AS (
 	SELECT
@@ -52,23 +56,12 @@ AS (
 	FROM input.day08 D
 	CROSS APPLY STRING_SPLIT(D.line, ',') SS
 )
-INSERT INTO dbo.day08_boxes (
-    box_id,
-    box_coordinates,
-    x,
-    y,
-    z,
-	coordinates_vector,
-	circuit_id
-)
 SELECT
 	X.line_id,
 	X.line,
     X.value,
     Y.value,
-    Z.value,
-	JSON_ARRAY(X.value, Y.value, Z.value),
-	X.line_id
+    Z.value
 
 FROM Coordinates X
 INNER JOIN Coordinates Y ON Y.line_id = X.line_id
@@ -78,16 +71,82 @@ INNER JOIN Coordinates Z ON Z.line_id = X.line_id
 WHERE X.rn = 1;
 GO
 
+-- Express the coordinates as a vector
+WITH Coordinates
+AS (
+	SELECT
+		D.line_id,
+		D.line,
+		CONVERT(INT, SS.value) AS value,
+		ROW_NUMBER() OVER (PARTITION BY D.line_id ORDER BY (SELECT 1)) AS rn
+
+	FROM input.day08 D
+	CROSS APPLY STRING_SPLIT(D.line, ',') SS
+)
+SELECT
+	X.line_id,
+	X.line,
+	JSON_ARRAY(X.value, Y.value, Z.value) AS vector_content
+
+FROM Coordinates X
+INNER JOIN Coordinates Y ON Y.line_id = X.line_id
+	AND Y.rn = 2
+INNER JOIN Coordinates Z ON Z.line_id = X.line_id
+	AND Z.rn = 3
+WHERE X.rn = 1;
+GO
+
+-- Express the input content as a vector (simpler version)
+SELECT
+	I.line_id,
+	I.line,
+	'[' || I.line || ']' AS vector_content
+
+FROM input.day08 I;
+GO
+
+-- 1st problem: After making the first 10 (sample) or 1000 (input) connections, multiply the length of the three longest circuits
+
+DROP TABLE IF EXISTS dbo.day08_boxes;
+GO
+
+CREATE TABLE dbo.day08_boxes (
+	box_id INT NOT NULL,
+	box_coordinates VARCHAR(MAX) NOT NULL,
+	coordinates_vector VECTOR(3) NULL,
+	circuit_id INT NOT NULL
+);
+GO
+
+INSERT INTO dbo.day08_boxes (
+    box_id,
+    box_coordinates,
+	coordinates_vector,
+    circuit_id
+)
+SELECT
+	I.line_id,
+	I.line,
+	'[' || I.line || ']',
+	I.line_id
+
+FROM input.day08 I;
+GO
+
+-- Each box belongs to its circuit
+SELECT * FROM dbo.day08_boxes;
+GO
+
 DROP TABLE IF EXISTS dbo.day08_distances;
 GO
 
+-- Compute the distance between each pair of boxes
 SELECT
 	B1.box_id AS box_id_from,
 	B1.box_coordinates AS box_coordinates_from,
 	B2.box_id AS box_id_to,
 	B2.box_coordinates AS box_coordinates_to,
-	SQRT(CONVERT(BIGINT, SQUARE(B1.x - B2.x) + SQUARE(B1.y - B2.y) + SQUARE(B1.z - B2.z))) AS distance_pythagoras,
-	VECTOR_DISTANCE('euclidean', B1.coordinates_vector, B2.coordinates_vector) AS distance_vector
+	VECTOR_DISTANCE('euclidean', B1.coordinates_vector, B2.coordinates_vector) AS distance
 
 INTO dbo.day08_distances
 
@@ -95,7 +154,14 @@ FROM dbo.day08_boxes B1
 INNER JOIN dbo.day08_boxes B2 ON B2.box_id < B1.box_id;
 GO
 
-SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
+
+--/* -- Pair of boxes to connect (sample data)
+SELECT TOP (10) * FROM dbo.day08_distances ORDER BY distance;
+
+--*/ SELECT TOP (1000) * FROM dbo.day08_distances ORDER BY distance; -- input data
+GO
+
+--SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 GO
 
 DECLARE @box_id_from INT,
@@ -104,10 +170,10 @@ DECLARE @box_id_from INT,
 	@iteration INT = 0,
 	@circuits_count INT;
 
+-- How many iterations? 10 for the sample data, 1000 for the input data
 SELECT @iteration_count = CASE WHEN (SELECT COUNT(1) FROM dbo.day08_boxes) = 20 THEN 10 ELSE 1000 END;
 
---DECLARE curDistances CURSOR FAST_FORWARD READ_ONLY FOR SELECT box_id_from, box_id_to FROM dbo.day08_distances ORDER BY distance_pythagoras
-DECLARE curDistances CURSOR FAST_FORWARD READ_ONLY FOR SELECT box_id_from, box_id_to FROM dbo.day08_distances ORDER BY distance_vector
+DECLARE curDistances CURSOR FAST_FORWARD READ_ONLY FOR SELECT box_id_from, box_id_to FROM dbo.day08_distances ORDER BY distance
 
 OPEN curDistances
 
@@ -118,7 +184,9 @@ BEGIN
 
 	SET @iteration = @iteration + 1;
 
-	WITH BoxesToConnect
+	WITH 
+	-- Pair of boxes to connect
+	BoxesToConnect
 	AS (
 		SELECT
 			B.box_id,
@@ -133,6 +201,7 @@ BEGIN
 
 	FROM BoxesToConnect BTC
 	INNER JOIN BoxesToConnect BTCRef ON BTCRef.rn = 1
+	-- also set the circuit_id for the already connected boxes
 	INNER JOIN dbo.day08_boxes B ON B.circuit_id = BTC.circuit_id
 	WHERE BTC.rn > 1;
 
@@ -166,6 +235,9 @@ DEALLOCATE curDistances
 GO
 
 -- 2nd problem: Multiply the X coordinates of the two junction boxes of the first connection that form a single circuit
+
+SET STATISTICS IO, TIME OFF; SET NOCOUNT OFF;
+GO
 
 DROP TABLE IF EXISTS dbo.day08_boxes;
 GO
@@ -226,10 +298,7 @@ FROM dbo.day08_boxes B1
 INNER JOIN dbo.day08_boxes B2 ON B2.box_id < B1.box_id;
 GO
 
-DROP TABLE IF EXISTS dbo.day08_circuits;
-GO
-
-SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
+--SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 GO
 
 DECLARE @box_id_from INT,
@@ -312,3 +381,6 @@ DEALLOCATE curDistances
 GO
 
 /* Day 8: END */
+
+SELECT * FROM dbo.day08_results;
+GO

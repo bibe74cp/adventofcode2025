@@ -30,3 +30,9 @@
 [ -f day11/input.txt ] && docker cp day11/input.txt sql2025:/var/aoc/input_D11P1.txt
 [ -f day12/sample.txt ] && docker cp day12/sample.txt sql2025:/var/aoc/sample_D12P1.txt
 [ -f day12/input.txt ] && docker cp day12/input.txt sql2025:/var/aoc/input_D12P1.txt
+
+[ -f day08/input_davide.txt ] && docker cp day08/input_davide.txt sql2025:/var/aoc/input_D08P1_davide.txt
+[ -f day08/input_moreno.txt ] && docker cp day08/input_moreno.txt sql2025:/var/aoc/input_D08P1_moreno.txt
+[ -f day08/input_emanuele.txt ] && docker cp day08/input_emanuele.txt sql2025:/var/aoc/input_D08P1_emanuele.txt
+[ -f day08/input_mirko.txt ] && docker cp day08/input_mirko.txt sql2025:/var/aoc/input_D08P1_mirko.txt
+[ -f day08/input_luca.txt ] && docker cp day08/input_luca.txt sql2025:/var/aoc/input_D08P1_luca.txt
