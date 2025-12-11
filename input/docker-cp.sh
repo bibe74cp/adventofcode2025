@@ -36,3 +36,5 @@
 [ -f day08/input_emanuele.txt ] && docker cp day08/input_emanuele.txt sql2025:/var/aoc/input_D08P1_emanuele.txt
 [ -f day08/input_mirko.txt ] && docker cp day08/input_mirko.txt sql2025:/var/aoc/input_D08P1_mirko.txt
 [ -f day08/input_luca.txt ] && docker cp day08/input_luca.txt sql2025:/var/aoc/input_D08P1_luca.txt
+
+[ -f day11/sample2.txt ] && docker cp day11/sample2.txt sql2025:/var/aoc/sample_D11P2.txt
