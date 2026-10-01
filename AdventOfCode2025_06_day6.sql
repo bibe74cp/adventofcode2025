@@ -16,7 +16,7 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	/*
+	--/*
 	BULK INSERT input.day06 FROM '/var/aoc/sample_D06P1.txt';
 	--*/ BULK INSERT input.day06 FROM '/var/aoc/input_D06P1.txt';
 

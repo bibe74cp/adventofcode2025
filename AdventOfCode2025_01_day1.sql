@@ -16,7 +16,7 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	/*
+	--/*
 	BULK INSERT input.day01 FROM '/var/aoc/sample_D01P1.txt';
 	--*/ BULK INSERT input.day01 FROM '/var/aoc/input_D01P1.txt';
 	
@@ -32,7 +32,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D01_ExplainMove (
+CREATE OR ALTER FUNCTION dbo.ufn_D01_ExplainMove (
 	@initial_position SMALLINT,
 	@move_id INT
 )
@@ -105,7 +105,7 @@ AS (
         final_position,
         zeroes_passed
 	
-	FROM dbo.usp_D01_ExplainMove(50, 1)
+	FROM dbo.ufn_D01_ExplainMove(50, 1)
 
 	UNION ALL
 
@@ -117,7 +117,7 @@ AS (
         EM.zeroes_passed
 
 	FROM Moves M
-	CROSS APPLY dbo.usp_D01_ExplainMove(M.final_position, M.move_id + 1) EM
+	CROSS APPLY dbo.ufn_D01_ExplainMove(M.final_position, M.move_id + 1) EM
 )
 SELECT
 	SUM(CASE WHEN M.final_position = 0 THEN 1 ELSE 0 END) AS response1,

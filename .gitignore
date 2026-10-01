@@ -1,5 +1,5 @@
 desktop.ini
 .env
 input.txt
-sample.txt
+sample*.txt
 .vs/*

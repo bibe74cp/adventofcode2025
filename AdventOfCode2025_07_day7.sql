@@ -16,7 +16,7 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	/*
+	--/*
 	BULK INSERT input.day07 FROM '/var/aoc/sample_D07P1.txt';
 	--*/ BULK INSERT input.day07 FROM '/var/aoc/input_D07P1.txt';
 
@@ -25,7 +25,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D07_SplitLine (
+CREATE OR ALTER FUNCTION dbo.ufn_D07_SplitLine (
 	@input_line VARCHAR(MAX)
 )
 RETURNS @ret TABLE (
@@ -66,7 +66,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D07_ProcessLine (
+CREATE OR ALTER FUNCTION dbo.ufn_D07_ProcessLine (
 	@input_line VARCHAR(MAX),
 	@line_id BIGINT
 )
@@ -85,7 +85,7 @@ BEGIN
 			SL.position,
 			SL.content
 
-		FROM dbo.usp_D07_SplitLine(@input_line) SL
+		FROM dbo.ufn_D07_SplitLine(@input_line) SL
 	),
 	Operator
 	AS (
@@ -94,7 +94,7 @@ BEGIN
 			SL.content
 
 		FROM input.day07 I
-		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
+		CROSS APPLY dbo.ufn_D07_SplitLine(I.line) SL
 		WHERE I.line_id = @line_id
 	)
 	SELECT
@@ -111,7 +111,7 @@ BEGIN
 			SL.position,
 			SL.content
 
-		FROM dbo.usp_D07_SplitLine(@input_line) SL
+		FROM dbo.ufn_D07_SplitLine(@input_line) SL
 	),
 	Operator
 	AS (
@@ -120,7 +120,7 @@ BEGIN
 			SL.content
 
 		FROM input.day07 I
-		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
+		CROSS APPLY dbo.ufn_D07_SplitLine(I.line) SL
 		WHERE I.line_id = @line_id
 	),
 	Splits
@@ -199,7 +199,7 @@ AS (
 
 	FROM Tree T
 	INNER JOIN input.day07 I ON I.line_id = T.line_id + 1
-	CROSS APPLY dbo.usp_D07_ProcessLine(T.processed_line, I.line_id) PL
+	CROSS APPLY dbo.ufn_D07_ProcessLine(T.processed_line, I.line_id) PL
 )
 /*
 SELECT T.processed_line
@@ -224,7 +224,7 @@ SELECT
 INTO dbo.day07_positions
 
 FROM input.day07 I
-CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
+CROSS APPLY dbo.ufn_D07_SplitLine(I.line) SL
 WHERE I.line_id = 1;
 GO
 
@@ -246,7 +246,7 @@ BEGIN
 			SL.content
 
 		FROM input.day07 I
-		CROSS APPLY dbo.usp_D07_SplitLine(I.line) SL
+		CROSS APPLY dbo.ufn_D07_SplitLine(I.line) SL
 		WHERE I.line_id = @line_id
 	),
 	Splits

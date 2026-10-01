@@ -16,13 +16,13 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	BULK INSERT input.day08 FROM '/var/aoc/sample_D08P1.txt';
+	--BULK INSERT input.day08 FROM '/var/aoc/sample_D08P1.txt';
 	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1.txt';
 	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_davide.txt';
 	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_moreno.txt';
 	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_emanuele.txt';
 	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_mirko.txt';
-	--BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_luca.txt';
+	BULK INSERT input.day08 FROM '/var/aoc/input_D08P1_luca.txt';
 
 	ALTER TABLE input.day08 ADD line_id INT NOT NULL IDENTITY (1, 1);
 
@@ -156,7 +156,7 @@ GO
 
 
 --/* -- Pair of boxes to connect (sample data)
-SELECT TOP (10) * FROM dbo.day08_distances ORDER BY distance;
+SELECT TOP (1000) * FROM dbo.day08_distances ORDER BY distance;
 
 --*/ SELECT TOP (1000) * FROM dbo.day08_distances ORDER BY distance; -- input data
 GO

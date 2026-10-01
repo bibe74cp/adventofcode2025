@@ -16,7 +16,7 @@ BEGIN
 		line VARCHAR(MAX) NOT NULL
 	);
 
-	/*
+	--/*
 	BULK INSERT input.day03 FROM '/var/aoc/sample_D03P1.txt';
 	--*/ BULK INSERT input.day03 FROM '/var/aoc/input_D03P1.txt';
 
@@ -24,7 +24,7 @@ END;
 GO
 
 
-CREATE OR ALTER FUNCTION dbo.usp_D03_GetHigherDigit (
+CREATE OR ALTER FUNCTION dbo.ufn_D03_GetHigherDigit (
 	@line VARCHAR(100),
 	@remainder_length TINYINT
 )
@@ -55,7 +55,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D03_GetJoltage (@line VARCHAR(100), @depth TINYINT = 2)
+CREATE OR ALTER FUNCTION dbo.ufn_D03_GetJoltage (@line VARCHAR(100), @depth TINYINT = 2)
 RETURNS BIGINT
 AS
 BEGIN
@@ -70,7 +70,7 @@ BEGIN
 			CONVERT(VARCHAR(100), GHD.higher_digit) AS result,
 			GHD.remainder
 
-		FROM dbo.usp_D03_GetHigherDigit(@line, @depth) GHD
+		FROM dbo.ufn_D03_GetHigherDigit(@line, @depth) GHD
 
 		UNION ALL
 
@@ -81,7 +81,7 @@ BEGIN
 			GHD.remainder
 
 		FROM Tree T
-		CROSS APPLY dbo.usp_D03_GetHigherDigit(T.remainder, T.depth - 1) GHD
+		CROSS APPLY dbo.ufn_D03_GetHigherDigit(T.remainder, T.depth - 1) GHD
 		WHERE T.depth > 1
 	)
 	SELECT @result = CONVERT(BIGINT, T.result)
@@ -97,8 +97,8 @@ GO
 SET STATISTICS IO, TIME ON; SET NOCOUNT ON;
 
 SELECT
-	SUM(dbo.usp_D03_GetJoltage(B.line, 2)) AS response1,
-	SUM(dbo.usp_D03_GetJoltage(B.line, 12)) AS response2
+	SUM(dbo.ufn_D03_GetJoltage(B.line, 2)) AS response1,
+	SUM(dbo.ufn_D03_GetJoltage(B.line, 12)) AS response2
 
 FROM input.day03 B;
 GO

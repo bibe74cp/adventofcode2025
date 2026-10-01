@@ -16,7 +16,7 @@ BEGIN
 		line NVARCHAR(MAX) NOT NULL
 	);
 
-	/*
+	--/*
 	BULK INSERT input.day04 FROM '/var/aoc/sample_D04P1.txt';
 	--*/ BULK INSERT input.day04 FROM '/var/aoc/input_D04P1.txt';
 
@@ -31,7 +31,7 @@ GO
 SELECT * INTO dbo.day04_clone FROM input.day04;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRoll (@line NVARCHAR(200), @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.ufn_D04_CheckRoll (@line NVARCHAR(200), @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -41,7 +41,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CountRolls (@line NVARCHAR(200), @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.ufn_D04_CountRolls (@line NVARCHAR(200), @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -55,7 +55,7 @@ BEGIN
 
 		FROM GENERATE_SERIES(-1, 1, 1) GS
 	)
-	SELECT @rollCount = SUM(dbo.usp_D04_CheckRoll(@line, S.position))
+	SELECT @rollCount = SUM(dbo.ufn_D04_CheckRoll(@line, S.position))
 
 	FROM Slots S
 	WHERE S.position BETWEEN 1 AND LEN(@line);
@@ -65,7 +65,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CountAdjacentRolls (@line_id INT, @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.ufn_D04_CountAdjacentRolls (@line_id INT, @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -81,7 +81,7 @@ BEGIN
 	)
 	SELECT
 		@rollCount = SUM(
-			dbo.usp_D04_CountRolls(I.line, @position)
+			dbo.ufn_D04_CountRolls(I.line, @position)
 			- CASE WHEN I.line_id = @line_id AND SUBSTRING(I.line, @position, 1) = N'@' THEN 1 ELSE 0 END
 		)
 
@@ -93,7 +93,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION dbo.usp_D04_CheckRollAvailability (@line_id INT, @position SMALLINT)
+CREATE OR ALTER FUNCTION dbo.ufn_D04_CheckRollAvailability (@line_id INT, @position SMALLINT)
 RETURNS INT
 AS
 BEGIN
@@ -109,7 +109,7 @@ BEGIN
 
 	IF SUBSTRING(@line, @position, 1) <> N'@' RETURN 0;
 
-	SELECT @adjacentRolls = dbo.usp_D04_CountAdjacentRolls(@line_id, @position);
+	SELECT @adjacentRolls = dbo.ufn_D04_CountAdjacentRolls(@line_id, @position);
 
 	RETURN CASE WHEN @adjacentRolls < 4 THEN 1 ELSE 0 END;
 
@@ -126,7 +126,7 @@ AS (
 	FROM GENERATE_SERIES(1, 136, 1) GS
 )
 SELECT
-	SUM(dbo.usp_D04_CheckRollAvailability(I.line_id, C.col)) AS response1
+	SUM(dbo.ufn_D04_CheckRollAvailability(I.line_id, C.col)) AS response1
 
 FROM dbo.day04_clone I,
 	Cols C;
@@ -170,7 +170,7 @@ BEGIN
 
 	FROM #D04_Rolls R
 	WHERE R.slotContent = '@'
-		AND dbo.usp_D04_CheckRollAvailability(R.line_id, R.col) = 1;
+		AND dbo.ufn_D04_CheckRollAvailability(R.line_id, R.col) = 1;
 
 	SELECT
 		@rollsRemoved = COUNT(1)

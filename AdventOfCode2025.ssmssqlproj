@@ -90,6 +90,12 @@
           <AssociatedConnUserName />
           <FullPath>AdventOfCode2025_11_day11.sql</FullPath>
         </FileNode>
+        <FileNode Name="AdventOfCode2025_12_day12.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>AdventOfCode2025_12_day12.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
